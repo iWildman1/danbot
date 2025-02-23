@@ -8,7 +8,10 @@ const schema = z.object({
   DISCORD_TOKEN: z.string(),
   DISCORD_CHANNEL: z.string(),
   DISCORD_TAG_ID: z.string(),
-  REDIS_URL: z.string()
+  REDIS_URL: z.string(),
+  NODE_ENV: z
+    .enum(['development', 'staging', 'production'])
+    .default('production'),
 });
 
 // Type-safe environment variables

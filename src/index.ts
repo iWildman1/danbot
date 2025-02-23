@@ -33,6 +33,16 @@ client.on('ready', () => {
   }
 
   channel = internalChannel;
+
+  // If we're in development mode, only run the scan once - Don't schedule anything
+  if (env.NODE_ENV === 'development') {
+    console.log('[DanBot] Running in development mode. Firing one-off scan...');
+
+    checkForEventsAndSend();
+
+    return;
+  }
+
   job.start();
 });
 
@@ -66,6 +76,19 @@ function sendEventsResponse(events: Awaited<ReturnType<typeof getEventsList>>) {
       eventTitles.substring(currentChunk, currentChunk + CHUNK_SIZE)
     );
     currentChunk += CHUNK_SIZE;
+  }
+
+  // If we're in staging or development, just log the events to the console instead of sending them to Discord
+  if (env.NODE_ENV === 'development' || env.NODE_ENV === 'staging') {
+    console.log(
+      `[DanBot] Waterstones Eventbrite search complete.**\nFound ${events.length} events:`
+    );
+
+    chunkedTitles?.forEach((chunk) => {
+      if (chunk.length > 0) console.log(chunk);
+    });
+
+    return;
   }
 
   channel.send(
