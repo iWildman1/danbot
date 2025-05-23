@@ -8,13 +8,15 @@ FROM node:${NODE_VERSION} AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN corepack enable
 
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN npm run build
+RUN pnpm run build
 
 ########################################################
 # RUNNER STAGE
