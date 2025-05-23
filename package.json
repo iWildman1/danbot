@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "build": "esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --format=cjs --minify --sourcemap --target=node22"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "@types/node": "^20.4.1",
     "dotenv": "^16.3.1",
     "eslint-config-wesbos": "^3.2.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "esbuild": "^0.20.0"
   }
 }
