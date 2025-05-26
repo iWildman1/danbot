@@ -28,8 +28,14 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=builder /app/dist ./
+RUN apk add --no-cache redis
 
+COPY --from=builder /app/dist ./
+COPY entrypoint.sh /app/entrypoint.sh
+
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
 EXPOSE 3000
 
 CMD ["node", "index.js"] 
