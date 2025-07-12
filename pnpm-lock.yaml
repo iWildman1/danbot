@@ -20,6 +20,9 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.6.1
+      redis:
+        specifier: ^5.1.0
+        version: 5.1.0
       zod:
         specifier: ^3.20.6
         version: 3.25.27
@@ -284,6 +287,34 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
+  '@redis/bloom@5.1.0':
+    resolution: {integrity: sha512-Gp5RWvVKbvItMU2sd848yhY/BnigToz8H4PYcvlBBSP5cQ3lVP1LMh5Kx2CYBNzCdDabVicwBKNvaoLBqPNqIg==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@redis/client': ^5.1.0
+
+  '@redis/client@5.1.0':
+    resolution: {integrity: sha512-FMD35y2KgCWTBLOfF0MhwDSaIVcu5mOUuTV9Kw3JOWHMgON3+ulht31cjTB/gph0BfD1vzUvCeROeRaf/d+35w==}
+    engines: {node: '>= 18'}
+
+  '@redis/json@5.1.0':
+    resolution: {integrity: sha512-laXZt1Rlimk3py5ZoABBnd4xn/8dWbLUWGvVS7avgMhdczS+eWtXpElilJbFpc+7ZpVlol4vaSGFuR8ThDcTFw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@redis/client': ^5.1.0
+
+  '@redis/search@5.1.0':
+    resolution: {integrity: sha512-afQYMeIdWGNPjr84GxxgJVkolxMW3BBrlNOwhRHPdzbdGh0rTUPjOJpGHBig34ostHX6AhZ6QwqceU1zLluDEg==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@redis/client': ^5.1.0
+
+  '@redis/time-series@5.1.0':
+    resolution: {integrity: sha512-BjKndLXREPeb4ZtxrI6z1bz2FbzBj7LnWyyevNk6Wd7VRWQ3W10LSvJAJwguPD62mSqpTPhy0lMPqFJwo0gS7A==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@redis/client': ^5.1.0
+
   '@sapphire/async-queue@1.5.5':
     resolution: {integrity: sha512-cvGzxbba6sav2zZkH8GPf2oGk9yYoD5qrNWdu9fRehifgnFZJMV+nuy2nON2roRO4yQQ+v7MK/Pktl/HgfsUXg==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
@@ -513,6 +544,10 @@ packages:
     resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
     engines: {node: '>=4'}
 
+  redis@5.1.0:
+    resolution: {integrity: sha512-5G5k9sYo5H5L0kd7UETiJZFTkIClH31fSmaEk2eU8E7mrmF0J1t6RqmFXOCJmSRlNd3QyvDUK/AWL9psbKaN0Q==}
+    engines: {node: '>= 18'}
+
   standard-as-callback@2.1.0:
     resolution: {integrity: sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==}
 
@@ -737,6 +772,26 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@redis/bloom@5.1.0(@redis/client@5.1.0)':
+    dependencies:
+      '@redis/client': 5.1.0
+
+  '@redis/client@5.1.0':
+    dependencies:
+      cluster-key-slot: 1.1.2
+
+  '@redis/json@5.1.0(@redis/client@5.1.0)':
+    dependencies:
+      '@redis/client': 5.1.0
+
+  '@redis/search@5.1.0(@redis/client@5.1.0)':
+    dependencies:
+      '@redis/client': 5.1.0
+
+  '@redis/time-series@5.1.0(@redis/client@5.1.0)':
+    dependencies:
+      '@redis/client': 5.1.0
 
   '@sapphire/async-queue@1.5.5': {}
 
@@ -975,6 +1030,14 @@ snapshots:
   redis-parser@3.0.0:
     dependencies:
       redis-errors: 1.2.0
+
+  redis@5.1.0:
+    dependencies:
+      '@redis/bloom': 5.1.0(@redis/client@5.1.0)
+      '@redis/client': 5.1.0
+      '@redis/json': 5.1.0(@redis/client@5.1.0)
+      '@redis/search': 5.1.0(@redis/client@5.1.0)
+      '@redis/time-series': 5.1.0(@redis/client@5.1.0)
 
   standard-as-callback@2.1.0: {}
 
