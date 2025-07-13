@@ -8,12 +8,11 @@ import {
 	Routes,
 	type TextChannel,
 } from "discord.js";
-import {
-	handleInitializeCommand,
-	initializeCommand,
-} from "./commands/initialize";
+import "./commands/get-instant-alerts";
+import { getCommandsJSON } from "./commands/registry";
 import { env } from "./env";
 import { getEventsList } from "./events";
+import { routeInteraction } from "./commands/router";
 
 const CHUNK_SIZE = 1500;
 
@@ -37,7 +36,7 @@ async function registerCommands() {
 		console.log("[DanBot] Registering slash commands...");
 
 		await rest.put(Routes.applicationCommands(env.DISCORD_APPLICATION_ID), {
-			body: [initializeCommand.toJSON()],
+			body: getCommandsJSON(),
 		});
 
 		console.log("[DanBot] Successfully registered slash commands.");
@@ -48,26 +47,7 @@ async function registerCommands() {
 
 // Handle interactions
 client.on(Events.InteractionCreate, async (interaction) => {
-	try {
-		if (interaction.isChatInputCommand()) {
-			if (interaction.commandName === "initialize") {
-				await handleInitializeCommand(interaction);
-			}
-		}
-	} catch (error) {
-		console.error("[DanBot] Error handling interaction:", error);
-
-		if (
-			interaction.isChatInputCommand() &&
-			!interaction.replied &&
-			!interaction.deferred
-		) {
-			await interaction.reply({
-				content: "❌ An error occurred while processing your request.",
-				ephemeral: true,
-			});
-		}
-	}
+	await routeInteraction(interaction);
 });
 
 // Create the scheduled task but don't start it running straight away
