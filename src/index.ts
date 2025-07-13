@@ -155,6 +155,7 @@ function sendEventsResponse(events: Awaited<ReturnType<typeof getEventsList>>) {
 	);
 
 	for (const chunk of chunkedTitles || []) {
-		if (chunk.length > 0) channel.send(chunk);
+		if (chunk.length > 0)
+			channel.send(`<@&${env.INSTANT_NOTIFICATIONS_ROLE_ID}>\n${chunk}`);
 	}
 }
