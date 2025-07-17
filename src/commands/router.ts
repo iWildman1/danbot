@@ -1,4 +1,8 @@
-import type { ChatInputCommandInteraction, ButtonInteraction, Interaction } from "discord.js";
+import type {
+	ButtonInteraction,
+	ChatInputCommandInteraction,
+	Interaction,
+} from "discord.js";
 import { getAllCommands, getCommand } from "./registry";
 
 async function handleSlashCommand(interaction: ChatInputCommandInteraction) {

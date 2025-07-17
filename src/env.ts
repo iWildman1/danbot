@@ -12,6 +12,9 @@ const schema = z.object({
 	INSTANT_NOTIFICATIONS_ROLE_ID: z.string(),
 	INSTANT_ACCESS_ROLE_ID: z.string(),
 	INSTANT_NOTIFICATIONS_CHANNEL_ID: z.string(),
+	DAILY_NOTIFICATIONS_ROLE_ID: z.string(),
+	DAILY_ACCESS_ROLE_ID: z.string(),
+	DAILY_NOTIFICATIONS_CHANNEL_ID: z.string(),
 	GENERAL_CHANNEL_ID: z.string(),
 	REDIS_URL: z.string(),
 });

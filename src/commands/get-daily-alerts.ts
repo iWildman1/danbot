@@ -7,31 +7,31 @@ import {
   type GuildMember,
   SlashCommandBuilder,
 } from "discord.js";
-import { assignRole } from "@/services/role-manager";
+import { assignDailyRole } from "@/services/role-manager";
 import type { Command, ComponentInteraction } from "@/types/commands";
 import { registerCommand } from "./registry";
 
-const getInstantAlertsCommand: Command = {
+const getDailyAlertsCommand: Command = {
   data: new SlashCommandBuilder()
-    .setName("get-instant-alerts")
-    .setDescription("Set up your DanBot event notification preferences"),
+    .setName("get-daily-alerts")
+    .setDescription("Set up your DanBot daily event notification preferences"),
 
   async execute(interaction: ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
-      .setTitle("🔔 DanBot Instant Event Notifications")
+      .setTitle("📅 DanBot Daily Event Notifications")
       .setDescription(
-        "Choose your notification preference for instant alerts for new events:"
+        "Choose your notification preference for daily alerts for new events:"
       )
       .addFields(
         {
           name: "🔔 Get Notifications",
           value:
-            "Access to instant notifications channel + tagged when new events are found",
+            "Access to daily notifications channel + tagged when new events are found",
           inline: false,
         },
         {
           name: "👁️ Access Only",
-          value: "Access to instant notifications channel without being tagged",
+          value: "Access to daily notifications channel without being tagged",
           inline: false,
         }
       )
@@ -39,11 +39,11 @@ const getInstantAlertsCommand: Command = {
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
-        .setCustomId("notifications")
+        .setCustomId("daily_notifications")
         .setLabel("🔔 Get Notifications")
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-        .setCustomId("access_only")
+        .setCustomId("daily_access_only")
         .setLabel("👁️ Access Only")
         .setStyle(ButtonStyle.Secondary)
     );
@@ -58,23 +58,27 @@ const getInstantAlertsCommand: Command = {
   canHandle(interaction: ComponentInteraction) {
     return (
       interaction.isButton() &&
-      ["notifications", "access_only"].includes(interaction.customId)
+      ["daily_notifications", "daily_access_only"].includes(
+        interaction.customId
+      )
     );
   },
 
   async handleInteraction(interaction: ComponentInteraction) {
-    const preference = interaction.customId as "notifications" | "access_only";
+    const preference = interaction.customId.replace("daily_", "") as
+      | "notifications"
+      | "access_only";
     const member = interaction.member as GuildMember;
 
     try {
-      await assignRole(member, preference);
+      await assignDailyRole(member, preference);
 
       const embed = new EmbedBuilder()
-        .setTitle("✅ Preferences Set")
+        .setTitle("✅ Daily Preferences Set")
         .setDescription(
           preference === "notifications"
-            ? "You will now receive tagged notifications for new Waterstones events and have access to the instant notifications channel."
-            : "You now have access to the instant notifications channel without being tagged in notifications."
+            ? "You will now receive tagged daily notifications for new Waterstones events and have access to the daily notifications channel."
+            : "You now have access to the daily notifications channel without being tagged in daily notifications."
         )
         .setColor(0x00ff00);
 
@@ -83,7 +87,7 @@ const getInstantAlertsCommand: Command = {
         components: [],
       });
     } catch (error) {
-      console.error("[GetInstantAlertsCommand] Error assigning role:", error);
+      console.error("[GetDailyAlertsCommand] Error assigning role:", error);
 
       const errorMessage =
         error instanceof Error
@@ -103,4 +107,4 @@ const getInstantAlertsCommand: Command = {
   },
 };
 
-registerCommand(getInstantAlertsCommand);
+registerCommand(getDailyAlertsCommand);
