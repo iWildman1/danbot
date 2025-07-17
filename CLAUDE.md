@@ -34,6 +34,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `src/commands/router.ts` - Interaction routing and error handling
   - `src/commands/get-instant-alerts.ts` - Instant notification command implementation
   - `src/commands/get-daily-alerts.ts` - Daily notification command implementation
+  - `src/commands/help.ts` - Help command with bot usage information
 
 **Key Architecture Patterns**:
 - **Dual notification system**: Supports both instant (15-minute intervals) and daily notifications (7pm daily)
@@ -44,11 +45,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Type-safe routing with early returns and proper error handling
   - Manual command registration (no auto-discovery) for predictable control
 - Role-based user preference management (notifications vs access-only) for both notification types
-- Redis caching to prevent duplicate notifications
+- Redis caching to prevent duplicate notifications (separate key spaces for instant vs daily)
 - Paginated API fetching with automatic handling
 - Type-safe environment validation using Zod
 - Message chunking for Discord's character limits (1500 chars)
 - Development mode logging instead of Discord posting
+- Cron scheduling: instant (every 15min, 7am-10pm) and daily (7pm)
 
 ## Technology Stack
 
@@ -59,7 +61,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Caching**: ioredis v5.3.2 for Redis
 - **Validation**: zod v3.20.6 for runtime type checking
 - **Build**: esbuild v0.20.0 for fast bundling
-- **Code Quality**: Biome v1.5.3 (replaces ESLint/Prettier)
+- **Code Quality**: Biome v1.9.4 (replaces ESLint/Prettier)
+- **Path Aliases**: TypeScript configured with `@/*` mapping to `src/*`
 
 ## Required Environment Variables
 
@@ -87,15 +90,17 @@ REDIS_URL                         # Redis connection string
 - Environment variables loaded via dotenv
 - Use `pnpm dev` for development mode (logs instead of Discord posting)
 - Use `pnpm start` for production-like behavior with ts-node
-- Code style: tabs, double quotes, organized imports
+- Code style: tabs, double quotes, organized imports (enforced by Biome)
 - TypeScript: Prefer type inference over explicit return types on functions
+- VS Code: Biome configured as default formatter with format-on-save enabled
 
 ## Build & Deployment
 
 - **Local build**: `pnpm build` creates minified bundle in dist/
 - **Docker**: Multi-stage Dockerfile with Node.js 22 Alpine
-- **CI/CD**: GitHub Actions builds and pushes to ghcr.io on main branch
-- **Production**: Containerized with Redis included
+- **CI/CD**: GitHub Actions workflow builds and pushes to ghcr.io/danielwildman/danbot on main branch
+- **Production**: Containerized with Redis included via docker-compose
+- **Registry**: Container images published to GitHub Container Registry
 
 ## Application Behavior
 
@@ -112,6 +117,7 @@ REDIS_URL                         # Redis connection string
 **User Management**:
 - `/get-instant-alerts` slash command allows users to join and set instant notification preferences
 - `/get-daily-alerts` slash command allows users to join and set daily notification preferences
+- `/help` slash command provides comprehensive bot usage information and guidance
 - Two role types for each notification system: notifications (get tagged) vs access-only (no tags)
 - Interactive buttons for preference selection
 - Automatic role switching when preferences change
