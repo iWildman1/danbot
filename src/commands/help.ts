@@ -13,46 +13,37 @@ const helpCommand: Command = {
 
 	async execute(interaction: ChatInputCommandInteraction) {
 		const embed = new EmbedBuilder()
-			.setTitle("🤖 DanBot - Book Event Notifications")
+			.setTitle("📚 DanBot")
 			.setDescription(
-				"DanBot monitors Waterstones events from Eventbrite and sends Discord notifications to keep you updated about new bookshop events",
+				"I keep an eye on Waterstones events and let you know when new ones pop up!",
 			)
 			.addFields(
 				{
-					name: "📅 What DanBot Does",
+					name: "What I do",
 					value:
-						"• Monitors Waterstones events from Eventbrite API\n• Sends notifications for new events\n• Filters out past events, only showing live/future ones",
+						"I check Eventbrite every so often for new Waterstones events and post them here. Only upcoming events - no point in telling you about stuff that's already happened.",
 					inline: false,
 				},
 				{
-					name: "🔔 Notification Types",
+					name: "Getting notifications",
 					value:
-						"**Instant Alerts**: Every 15 minutes (7am-10pm)\n**Daily Alerts**: Once daily at 7pm\n\nUse the commands below to set your preferences!",
+						"**Instant alerts**: Every 15 minutes between 7am-10pm\n**Daily digest**: Once a day at 7pm\n\nRun the commands below to choose what works for you.",
 					inline: false,
 				},
 				{
-					name: "⚙️ Available Commands",
+					name: "Commands",
 					value:
-						"• `/get-instant-alerts` - Set up instant notification preferences\n• `/get-daily-alerts` - Set up daily notification preferences\n• `/help` - Show this help message",
+						"`/get-instant-alerts` - Get pinged as soon as new events are found\n`/get-daily-alerts` - Get a daily summary of what's new\n`/help` - This message",
 					inline: false,
 				},
 				{
-					name: "🎯 How to Get Notifications",
+					name: "How it works",
 					value:
-						"1. Use `/get-instant-alerts` or `/get-daily-alerts`\n2. Choose your preference:\n   - 🔔 **Get Notifications**: Access + tagged in alerts\n   - 👁️ **Access Only**: Access without being tagged\n3. You'll be added to the appropriate channel!",
-					inline: false,
-				},
-				{
-					name: "💡 Tips",
-					value:
-						"• You can change your preferences anytime\n• Use both instant and daily alerts for full coverage\n• The bot runs automatically - no need to do anything else!",
+						"Run one of the alert commands and pick whether you want to be tagged in notifications or just have access to see them. You can change your mind anytime.",
 					inline: false,
 				},
 			)
-			.setColor(0x5865f2)
-			.setFooter({
-				text: "DanBot keeps you connected to author events",
-			});
+			.setColor(0x5865f2);
 
 		await interaction.reply({
 			embeds: [embed],
