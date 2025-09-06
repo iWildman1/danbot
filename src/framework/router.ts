@@ -4,6 +4,9 @@ import type {
 	Interaction,
 } from "discord.js";
 import { getAllCommands, getCommand } from "@/framework/registry";
+import { logger } from "@/framework/logger";
+
+const log = logger.child({ module: "router" });
 
 async function handleSlashCommand(interaction: ChatInputCommandInteraction) {
 	const command = getCommand(interaction.commandName);
@@ -27,12 +30,20 @@ async function handleButtonInteraction(interaction: ButtonInteraction) {
 export async function routeInteraction(interaction: Interaction) {
 	try {
 		if (interaction.isChatInputCommand()) {
+			log.debug("Dispatching slash command", {
+				name: interaction.commandName,
+				userId: interaction.user?.id,
+			});
 			await handleSlashCommand(interaction);
 		} else if (interaction.isButton()) {
+			log.debug("Dispatching button interaction", {
+				customId: interaction.customId,
+				userId: interaction.user?.id,
+			});
 			await handleButtonInteraction(interaction);
 		}
 	} catch (error) {
-		console.error("[DanBot] Error handling interaction:", error);
+		log.error("Error handling interaction", error);
 
 		if (
 			(interaction.isChatInputCommand() || interaction.isButton()) &&

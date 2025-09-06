@@ -9,6 +9,9 @@ import {
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
+import { logger } from "@/framework/logger";
+
+const log = logger.child({ module: "get-instant-alerts" });
 
 export const getInstantAlertsCommand: Command = {
 	data: new SlashCommandBuilder()
@@ -80,8 +83,16 @@ export const getInstantAlertsCommand: Command = {
 				embeds: [success],
 				components: [],
 			});
+
+			log.info("Assigned instant role", {
+				userId: member.user.id,
+				preference,
+			});
 		} catch (error) {
-			console.error("[GetInstantAlertsCommand] Error assigning role:", error);
+			log.error("Error assigning instant role", error, {
+				userId: member.user.id,
+				preference,
+			});
 
 			const errorMessage =
 				error instanceof Error

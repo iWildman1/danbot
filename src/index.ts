@@ -2,6 +2,7 @@ import { CronJob } from "cron";
 import { Events, type TextChannel } from "discord.js";
 import { commands } from "@/commands";
 import { env } from "@/env";
+import { logger } from "@/framework/logger";
 import {
 	createDiscordClient,
 	initializeDiscordBot,
@@ -53,5 +54,5 @@ client.on(Events.ClientReady, async () => {
 	instantJob.start();
 	dailyJob.start();
 
-	console.log("[DanBot] Bot is ready and schedulers started!");
+	logger.info("Bot is ready and schedulers started!");
 });

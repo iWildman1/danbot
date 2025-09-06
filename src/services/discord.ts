@@ -1,6 +1,7 @@
 import { getCommandsJSON } from "@/framework/registry";
 import { routeInteraction } from "@/framework/router";
 import { env } from "@/env";
+import { logger } from "@/framework/logger";
 import {
 	ChannelType,
 	Client,
@@ -25,15 +26,15 @@ export async function registerSlashCommands() {
 	const rest = new REST().setToken(env.DISCORD_TOKEN);
 
 	try {
-		console.log("[DanBot] Registering slash commands...");
+		logger.info("Registering slash commands...");
 
 		await rest.put(Routes.applicationCommands(env.DISCORD_APPLICATION_ID), {
 			body: getCommandsJSON(),
 		});
 
-		console.log("[DanBot] Successfully registered slash commands.");
+		logger.info("Successfully registered slash commands.");
 	} catch (error) {
-		console.error("[DanBot] Error registering slash commands:", error);
+		logger.error("Error registering slash commands", error);
 	}
 }
 
@@ -60,11 +61,11 @@ export function getTextChannel(
 }
 
 export async function initializeDiscordBot(client: Client) {
-	console.log(`[DanBot] Logged in as ${client.user?.tag}!`);
+	logger.info(`Logged in as ${client.user?.tag}!`);
 
 	if (env.NODE_ENV === "development") {
-		console.log(
-			"[DanBot DEV] Running in development mode - event notifications will be logged instead of posted to Discord",
+		logger.info(
+			"Running in development mode - event notifications will be logged instead of posted to Discord",
 		);
 	}
 

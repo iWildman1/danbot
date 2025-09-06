@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { logger } from "@/framework/logger";
 import type { GuildMember } from "discord.js";
 
 export async function assignRole(
@@ -29,16 +30,15 @@ export async function assignRole(
 		// Add the requested role
 		await member.roles.add(roleId);
 
-		if (env.NODE_ENV === "development") {
-			console.log(
-				`[RoleManager DEV] Successfully assigned role to ${member.user.tag} (${preference})`,
-			);
-		}
+		logger.info("Assigned instant role", {
+			userId: member.user.tag,
+			preference,
+		});
 	} catch (error) {
-		console.error(
-			`[RoleManager] Failed to assign role to ${member.user.tag}:`,
-			error,
-		);
+		logger.error("Failed to assign instant role", error, {
+			userId: member.user.tag,
+			preference,
+		});
 		throw error;
 	}
 }
@@ -85,16 +85,15 @@ export async function assignDailyRole(
 
 		await member.roles.add(roleId);
 
-		if (env.NODE_ENV === "development") {
-			console.log(
-				`[RoleManager DEV] Successfully assigned daily role to ${member.user.tag} (${preference})`,
-			);
-		}
+		logger.info("Assigned daily role", {
+			userId: member.user.tag,
+			preference,
+		});
 	} catch (error) {
-		console.error(
-			`[RoleManager] Failed to assign daily role to ${member.user.tag}:`,
-			error,
-		);
+		logger.error("Failed to assign daily role", error, {
+			userId: member.user.tag,
+			preference,
+		});
 		throw error;
 	}
 }
