@@ -12,4 +12,3 @@ export const commands: Command[] = [
 export const commandsByName = new Map<string, Command>(
 	commands.map((c) => [c.data.name, c]),
 );
-

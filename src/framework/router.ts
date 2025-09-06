@@ -46,4 +46,3 @@ export async function routeInteraction(interaction: Interaction) {
 		}
 	}
 }
-
