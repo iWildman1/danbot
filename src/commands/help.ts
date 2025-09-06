@@ -4,9 +4,8 @@ import {
 	EmbedBuilder,
 	SlashCommandBuilder,
 } from "discord.js";
-import { registerCommand } from "./registry";
 
-const helpCommand: Command = {
+export const helpCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Learn about DanBot and how to use it"),
@@ -51,5 +50,3 @@ const helpCommand: Command = {
 		});
 	},
 };
-
-registerCommand(helpCommand);

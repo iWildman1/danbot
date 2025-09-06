@@ -9,9 +9,8 @@ import {
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
-import { registerCommand } from "./registry";
 
-const getInstantAlertsCommand: Command = {
+export const getInstantAlertsCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("get-instant-alerts")
 		.setDescription("Set up your DanBot event notification preferences"),
@@ -39,11 +38,11 @@ const getInstantAlertsCommand: Command = {
 
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
-				.setCustomId("notifications")
+				.setCustomId("instant_notifications")
 				.setLabel("🔔 Get Notifications")
 				.setStyle(ButtonStyle.Primary),
 			new ButtonBuilder()
-				.setCustomId("access_only")
+				.setCustomId("instant_access_only")
 				.setLabel("👁️ Access Only")
 				.setStyle(ButtonStyle.Secondary),
 		);
@@ -58,12 +57,18 @@ const getInstantAlertsCommand: Command = {
 	canHandle(interaction: ComponentInteraction) {
 		return (
 			interaction.isButton() &&
-			["notifications", "access_only"].includes(interaction.customId)
+			["instant_notifications", "instant_access_only"].includes(
+				interaction.customId,
+			)
 		);
 	},
 
 	async handleInteraction(interaction: ComponentInteraction) {
-		const preference = interaction.customId as "notifications" | "access_only";
+		const id = interaction.customId as
+			| "instant_notifications"
+			| "instant_access_only";
+		const preference: "notifications" | "access_only" =
+			id === "instant_notifications" ? "notifications" : "access_only";
 		const member = interaction.member as GuildMember;
 
 		try {
@@ -102,5 +107,3 @@ const getInstantAlertsCommand: Command = {
 		}
 	},
 };
-
-registerCommand(getInstantAlertsCommand);

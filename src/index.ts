@@ -1,18 +1,21 @@
 import { CronJob } from "cron";
 import { Events, type TextChannel } from "discord.js";
-import "@/commands/get-instant-alerts";
-import "@/commands/get-daily-alerts";
-import "@/commands/help";
+import { commands } from "@/commands";
 import { env } from "@/env";
 import {
 	createDiscordClient,
 	initializeDiscordBot,
 	setupInteractionHandling,
 } from "@/services/discord";
+import { registerCommand } from "@/commands/registry";
 import {
 	scanAndSendDailyEvents,
 	scanAndSendInstantEvents,
 } from "@/services/scanner";
+
+for (const command of commands) {
+	registerCommand(command);
+}
 
 const client = createDiscordClient();
 

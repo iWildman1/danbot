@@ -9,9 +9,8 @@ import {
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
-import { registerCommand } from "./registry";
 
-const getDailyAlertsCommand: Command = {
+export const getDailyAlertsCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("get-daily-alerts")
 		.setDescription("Set up your DanBot daily event notification preferences"),
@@ -65,9 +64,11 @@ const getDailyAlertsCommand: Command = {
 	},
 
 	async handleInteraction(interaction: ComponentInteraction) {
-		const preference = interaction.customId.replace("daily_", "") as
-			| "notifications"
-			| "access_only";
+		const id = interaction.customId as
+			| "daily_notifications"
+			| "daily_access_only";
+		const preference: "notifications" | "access_only" =
+			id === "daily_notifications" ? "notifications" : "access_only";
 		const member = interaction.member as GuildMember;
 
 		try {
@@ -106,5 +107,3 @@ const getDailyAlertsCommand: Command = {
 		}
 	},
 };
-
-registerCommand(getDailyAlertsCommand);
