@@ -1,5 +1,5 @@
-import { getCommandsJSON } from "@/commands/registry";
-import { routeInteraction } from "@/commands/router";
+import { getCommandsJSON } from "@/framework/registry";
+import { routeInteraction } from "@/framework/router";
 import { env } from "@/env";
 import {
 	ChannelType,

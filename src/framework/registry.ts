@@ -17,3 +17,4 @@ export function getCommand(name: string) {
 export function getAllCommands() {
 	return Array.from(commands.values());
 }
+

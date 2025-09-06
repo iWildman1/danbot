@@ -3,7 +3,7 @@ import type {
 	ChatInputCommandInteraction,
 	Interaction,
 } from "discord.js";
-import { getAllCommands, getCommand } from "./registry";
+import { getAllCommands, getCommand } from "@/framework/registry";
 
 async function handleSlashCommand(interaction: ChatInputCommandInteraction) {
 	const command = getCommand(interaction.commandName);
@@ -13,10 +13,11 @@ async function handleSlashCommand(interaction: ChatInputCommandInteraction) {
 }
 
 async function handleButtonInteraction(interaction: ButtonInteraction) {
-	for (const command of getAllCommands()) {
-		if (!command.canHandle || !command.handleInteraction) continue;
+	const id = interaction.customId;
 
-		if (command.canHandle(interaction)) {
+	for (const command of getAllCommands()) {
+		if (!command.componentIds || !command.handleInteraction) continue;
+		if (command.componentIds.includes(id)) {
 			await command.handleInteraction(interaction);
 			return;
 		}
@@ -45,3 +46,4 @@ export async function routeInteraction(interaction: Interaction) {
 		}
 	}
 }
+

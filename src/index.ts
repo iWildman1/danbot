@@ -7,7 +7,7 @@ import {
 	initializeDiscordBot,
 	setupInteractionHandling,
 } from "@/services/discord";
-import { registerCommand } from "@/commands/registry";
+import { registerCommand } from "@/framework/registry";
 import {
 	scanAndSendDailyEvents,
 	scanAndSendInstantEvents,

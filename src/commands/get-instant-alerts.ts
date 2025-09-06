@@ -4,8 +4,8 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	type ChatInputCommandInteraction,
 	EmbedBuilder,
+	type ChatInputCommandInteraction,
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
@@ -14,6 +14,8 @@ export const getInstantAlertsCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("get-instant-alerts")
 		.setDescription("Set up your DanBot event notification preferences"),
+
+	componentIds: ["instant_notifications", "instant_access_only"],
 
 	async execute(interaction: ChatInputCommandInteraction) {
 		const embed = new EmbedBuilder()
@@ -54,15 +56,6 @@ export const getInstantAlertsCommand: Command = {
 		});
 	},
 
-	canHandle(interaction: ComponentInteraction) {
-		return (
-			interaction.isButton() &&
-			["instant_notifications", "instant_access_only"].includes(
-				interaction.customId,
-			)
-		);
-	},
-
 	async handleInteraction(interaction: ComponentInteraction) {
 		const id = interaction.customId as
 			| "instant_notifications"
@@ -74,7 +67,7 @@ export const getInstantAlertsCommand: Command = {
 		try {
 			await assignRole(member, preference);
 
-			const embed = new EmbedBuilder()
+			const success = new EmbedBuilder()
 				.setTitle("✅ Preferences Set")
 				.setDescription(
 					preference === "notifications"
@@ -84,7 +77,7 @@ export const getInstantAlertsCommand: Command = {
 				.setColor(0x00ff00);
 
 			await interaction.update({
-				embeds: [embed],
+				embeds: [success],
 				components: [],
 			});
 		} catch (error) {
