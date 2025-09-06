@@ -1,16 +1,12 @@
 import type { Command } from "@/types/commands";
-import {
-	type ChatInputCommandInteraction,
-	EmbedBuilder,
-	SlashCommandBuilder,
-} from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 
 export const helpCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Learn about DanBot and how to use it"),
 
-	async execute(interaction: ChatInputCommandInteraction) {
+	async execute(interaction) {
 		const embed = new EmbedBuilder()
 			.setTitle("📚 DanBot")
 			.setDescription(

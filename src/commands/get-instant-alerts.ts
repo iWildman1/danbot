@@ -1,11 +1,10 @@
 import { assignRole } from "@/services/role-manager";
-import type { Command, ComponentInteraction } from "@/types/commands";
+import type { Command } from "@/types/commands";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
-	type ChatInputCommandInteraction,
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
@@ -20,7 +19,7 @@ export const getInstantAlertsCommand: Command = {
 
 	componentIds: ["instant_notifications", "instant_access_only"],
 
-	async execute(interaction: ChatInputCommandInteraction) {
+	async execute(interaction) {
 		const embed = new EmbedBuilder()
 			.setTitle("🔔 DanBot Instant Event Notifications")
 			.setDescription(
@@ -59,11 +58,9 @@ export const getInstantAlertsCommand: Command = {
 		});
 	},
 
-	async handleInteraction(interaction: ComponentInteraction) {
-		const id = interaction.customId as
-			| "instant_notifications"
-			| "instant_access_only";
-		const preference: "notifications" | "access_only" =
+	async handleInteraction(interaction) {
+		const id = interaction.customId;
+		const preference =
 			id === "instant_notifications" ? "notifications" : "access_only";
 		const member = interaction.member as GuildMember;
 

@@ -1,11 +1,10 @@
 import { assignDailyRole } from "@/services/role-manager";
-import type { Command, ComponentInteraction } from "@/types/commands";
+import type { Command } from "@/types/commands";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
-	type ChatInputCommandInteraction,
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
@@ -20,7 +19,7 @@ export const getDailyAlertsCommand: Command = {
 
 	componentIds: ["daily_notifications", "daily_access_only"],
 
-	async execute(interaction: ChatInputCommandInteraction) {
+	async execute(interaction) {
 		const embed = new EmbedBuilder()
 			.setTitle("📅 DanBot Daily Event Notifications")
 			.setDescription(
@@ -59,11 +58,9 @@ export const getDailyAlertsCommand: Command = {
 		});
 	},
 
-	async handleInteraction(interaction: ComponentInteraction) {
-		const id = interaction.customId as
-			| "daily_notifications"
-			| "daily_access_only";
-		const preference: "notifications" | "access_only" =
+	async handleInteraction(interaction) {
+		const id = interaction.customId;
+		const preference =
 			id === "daily_notifications" ? "notifications" : "access_only";
 		const member = interaction.member as GuildMember;
 

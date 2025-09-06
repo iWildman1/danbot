@@ -43,7 +43,7 @@ export async function assignRole(
 	}
 }
 
-export function hasAccess(member: GuildMember): boolean {
+export function hasAccess(member: GuildMember) {
 	return (
 		member.roles.cache.has(env.INSTANT_NOTIFICATIONS_ROLE_ID) ||
 		member.roles.cache.has(env.INSTANT_ACCESS_ROLE_ID)
@@ -98,7 +98,7 @@ export async function assignDailyRole(
 	}
 }
 
-export function hasDailyAccess(member: GuildMember): boolean {
+export function hasDailyAccess(member: GuildMember) {
 	return (
 		member.roles.cache.has(env.DAILY_NOTIFICATIONS_ROLE_ID) ||
 		member.roles.cache.has(env.DAILY_ACCESS_ROLE_ID)

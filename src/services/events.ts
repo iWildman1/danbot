@@ -22,12 +22,7 @@ const eventListSchema = z.object({
 	),
 });
 
-type EventList = z.infer<typeof eventListSchema>;
-
 export async function getEventsList(redisKey = "seen_events") {
-	const results: EventList["events"] = [];
-	let token: string | undefined;
-
 	// We only want events that are in the future - Otherwise we'll get thousands of irrelevant past events!
 	const params = new URLSearchParams({
 		status: "live",
@@ -46,18 +41,12 @@ export async function getEventsList(redisKey = "seen_events") {
 	// I'd rather it crash during parsing and tell me the reason rather than cryptic undefined error.
 	const eventsData = eventListSchema.parse(rawEvents.data);
 
+	// Seed results with first page
+	const results = [...eventsData.events];
+
 	// Results are paginated - Continuously grab more results until we've got a list of all future events across all pages
 	// TODO: This would be miles better with a sprinkle of ✨recursion✨. Make it tidier, future Dan.
-	if (
-		eventsData.pagination?.has_more_items &&
-		eventsData.pagination?.continuation
-	) {
-		token = eventsData.pagination.continuation;
-	}
-
-	for (const event of eventsData.events) {
-		results.push(event);
-	}
+	let token = eventsData.pagination?.continuation;
 
 	while (token) {
 		const nextData = await axios.get(
@@ -71,18 +60,12 @@ export async function getEventsList(redisKey = "seen_events") {
 
 		const nextEventsData = eventListSchema.parse(nextData.data);
 
-		if (
-			nextEventsData.pagination?.has_more_items &&
-			nextEventsData.pagination?.continuation
-		) {
-			token = nextEventsData.pagination.continuation;
-		} else {
-			token = undefined;
-		}
 
-		for (const event of nextEventsData.events) {
-			results.push(event);
-		}
+		token = nextEventsData.pagination?.has_more_items
+			? nextEventsData.pagination?.continuation
+			: undefined;
+
+		results.push(...nextEventsData.events);
 	}
 
 	// Get the list of existing events from Redis
