@@ -62,7 +62,7 @@ export const getDailyAlertsCommand: Command = {
 			const buttonInteraction = await response.awaitMessageComponent({
 				componentType: ComponentType.Button,
 				filter: (i) => i.user.id === interaction.user.id,
-				time: 5000,
+				time: 60000,
 			});
 
 			const preference =
