@@ -11,8 +11,6 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 
-const log = logger.child({ module: "get-instant-alerts" });
-
 export const getInstantAlertsCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("get-instant-alerts")
@@ -89,17 +87,16 @@ export const getInstantAlertsCommand: Command = {
 					components: [],
 				});
 
-				log.info("Assigned instant role", {
-					userId: member.user.id,
-					preference,
-				});
+				logger.info("Assigned instant role:", member.user.id, preference);
 
 				collector.stop("completed");
 			} catch (error) {
-				log.error("Error assigning instant role", error, {
-					userId: member.user.id,
+				logger.error(
+					"Error assigning instant role:",
+					member.user.id,
 					preference,
-				});
+					error,
+				);
 
 				const errorMessage =
 					error instanceof Error
@@ -122,10 +119,11 @@ export const getInstantAlertsCommand: Command = {
 
 		collector.on("end", (collected, reason) => {
 			if (reason === "time") {
-				log.debug("Instant alerts collector timed out", {
-					userId: interaction.user.id,
-					collected: collected.size,
-				});
+				logger.debug(
+					"Instant alerts collector timed out:",
+					interaction.user.id,
+					collected.size,
+				);
 			}
 		});
 	},

@@ -1,31 +1,13 @@
 const prefix = "[DanBot]";
 const isDev = process.env.NODE_ENV === "development";
 
-const methodMap = {
-	log: console.log.bind(console),
-	warn: console.warn.bind(console),
-	error: console.error.bind(console),
+const log = (method: typeof console.log, ...args: unknown[]) => {
+	method(prefix, ...args);
 };
-
-const base =
-	(method: "log" | "warn" | "error") =>
-	(...args: unknown[]) => {
-		methodMap[method](prefix, ...args);
-	};
-
-const debug = (...args: unknown[]) => {
-	if (!isDev) return;
-	methodMap.log(prefix, ...args);
-};
-
-const info = base("log");
-const warn = base("warn");
-const error = base("error");
 
 export const logger = {
-	debug,
-	info,
-	warn,
-	error,
-	child: (_?: Record<string, unknown>) => ({ debug, info, warn, error }),
+	debug: (...args: unknown[]) => isDev && log(console.log, ...args),
+	info: (...args: unknown[]) => log(console.log, ...args),
+	warn: (...args: unknown[]) => log(console.warn, ...args),
+	error: (...args: unknown[]) => log(console.error, ...args),
 };
