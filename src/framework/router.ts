@@ -1,10 +1,6 @@
-import type {
-	ButtonInteraction,
-	ChatInputCommandInteraction,
-	Interaction,
-} from "discord.js";
-import { getAllCommands, getCommand } from "@/framework/registry";
 import { logger } from "@/framework/logger";
+import { getCommand } from "@/framework/registry";
+import type { ChatInputCommandInteraction, Interaction } from "discord.js";
 
 const log = logger.child({ module: "router" });
 
@@ -15,18 +11,6 @@ async function handleSlashCommand(interaction: ChatInputCommandInteraction) {
 	await command.execute(interaction);
 }
 
-async function handleButtonInteraction(interaction: ButtonInteraction) {
-	const id = interaction.customId;
-
-	for (const command of getAllCommands()) {
-		if (!command.componentIds || !command.handleInteraction) continue;
-		if (command.componentIds.includes(id)) {
-			await command.handleInteraction(interaction);
-			return;
-		}
-	}
-}
-
 export async function routeInteraction(interaction: Interaction) {
 	try {
 		if (interaction.isChatInputCommand()) {
@@ -35,18 +19,12 @@ export async function routeInteraction(interaction: Interaction) {
 				userId: interaction.user?.id,
 			});
 			await handleSlashCommand(interaction);
-		} else if (interaction.isButton()) {
-			log.debug("Dispatching button interaction", {
-				customId: interaction.customId,
-				userId: interaction.user?.id,
-			});
-			await handleButtonInteraction(interaction);
 		}
 	} catch (error) {
 		log.error("Error handling interaction", error);
 
 		if (
-			(interaction.isChatInputCommand() || interaction.isButton()) &&
+			interaction.isChatInputCommand() &&
 			!interaction.replied &&
 			!interaction.deferred
 		) {

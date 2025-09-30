@@ -1,7 +1,7 @@
-import { getCommandsJSON } from "@/framework/registry";
-import { routeInteraction } from "@/framework/router";
 import { env } from "@/env";
 import { logger } from "@/framework/logger";
+import { getCommandsJSON } from "@/framework/registry";
+import { routeInteraction } from "@/framework/router";
 import {
 	ChannelType,
 	Client,

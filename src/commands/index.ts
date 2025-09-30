@@ -1,6 +1,6 @@
-import { helpCommand } from "@/commands/help";
-import { getInstantAlertsCommand } from "@/commands/get-instant-alerts";
 import { getDailyAlertsCommand } from "@/commands/get-daily-alerts";
+import { getInstantAlertsCommand } from "@/commands/get-instant-alerts";
+import { helpCommand } from "@/commands/help";
 
 export const commands = [
 	helpCommand,
@@ -8,7 +8,4 @@ export const commands = [
 	getDailyAlertsCommand,
 ];
 
-
-export const commandsByName = new Map(
-	commands.map((c) => [c.data.name, c]),
-);
+export const commandsByName = new Map(commands.map((c) => [c.data.name, c]));

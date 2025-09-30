@@ -7,7 +7,8 @@ const methodMap = {
 	error: console.error.bind(console),
 };
 
-const base = (method: "log" | "warn" | "error") =>
+const base =
+	(method: "log" | "warn" | "error") =>
 	(...args: unknown[]) => {
 		methodMap[method](prefix, ...args);
 	};

@@ -1,14 +1,15 @@
+import { logger } from "@/framework/logger";
 import { assignRole } from "@/services/role-manager";
 import type { Command } from "@/types/commands";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	ComponentType,
 	EmbedBuilder,
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
-import { logger } from "@/framework/logger";
 
 const log = logger.child({ module: "get-instant-alerts" });
 
@@ -16,8 +17,6 @@ export const getInstantAlertsCommand: Command = {
 	data: new SlashCommandBuilder()
 		.setName("get-instant-alerts")
 		.setDescription("Set up your DanBot event notification preferences"),
-
-	componentIds: ["instant_notifications", "instant_access_only"],
 
 	async execute(interaction) {
 		const embed = new EmbedBuilder()
@@ -56,55 +55,78 @@ export const getInstantAlertsCommand: Command = {
 			components: [row],
 			ephemeral: true,
 		});
-	},
 
-	async handleInteraction(interaction) {
-		const id = interaction.customId;
-		const preference =
-			id === "instant_notifications" ? "notifications" : "access_only";
-		const member = interaction.member as GuildMember;
+		const response = await interaction.fetchReply();
 
-		try {
-			await assignRole(member, preference);
+		// Collect button interaction with 60 second timeout
+		const collector = response.createMessageComponentCollector({
+			componentType: ComponentType.Button,
+			filter: (i) => i.user.id === interaction.user.id,
+			time: 60000,
+		});
 
-			const success = new EmbedBuilder()
-				.setTitle("✅ Preferences Set")
-				.setDescription(
-					preference === "notifications"
-						? "You will now receive tagged notifications for new Waterstones events and have access to the instant notifications channel."
-						: "You now have access to the instant notifications channel without being tagged in notifications.",
-				)
-				.setColor(0x00ff00);
+		collector.on("collect", async (buttonInteraction) => {
+			const preference =
+				buttonInteraction.customId === "instant_notifications"
+					? "notifications"
+					: "access_only";
+			const member = buttonInteraction.member as GuildMember;
 
-			await interaction.update({
-				embeds: [success],
-				components: [],
-			});
+			try {
+				await assignRole(member, preference);
 
-			log.info("Assigned instant role", {
-				userId: member.user.id,
-				preference,
-			});
-		} catch (error) {
-			log.error("Error assigning instant role", error, {
-				userId: member.user.id,
-				preference,
-			});
+				const success = new EmbedBuilder()
+					.setTitle("✅ Preferences Set")
+					.setDescription(
+						preference === "notifications"
+							? "You will now receive tagged notifications for new Waterstones events and have access to the instant notifications channel."
+							: "You now have access to the instant notifications channel without being tagged in notifications.",
+					)
+					.setColor(0x00ff00);
 
-			const errorMessage =
-				error instanceof Error
-					? error.message
-					: "An unexpected error occurred.";
+				await buttonInteraction.update({
+					embeds: [success],
+					components: [],
+				});
 
-			const errorEmbed = new EmbedBuilder()
-				.setTitle("❌ Error")
-				.setDescription(errorMessage)
-				.setColor(0xff0000);
+				log.info("Assigned instant role", {
+					userId: member.user.id,
+					preference,
+				});
 
-			await interaction.update({
-				embeds: [errorEmbed],
-				components: [],
-			});
-		}
+				collector.stop("completed");
+			} catch (error) {
+				log.error("Error assigning instant role", error, {
+					userId: member.user.id,
+					preference,
+				});
+
+				const errorMessage =
+					error instanceof Error
+						? error.message
+						: "An unexpected error occurred.";
+
+				const errorEmbed = new EmbedBuilder()
+					.setTitle("❌ Error")
+					.setDescription(errorMessage)
+					.setColor(0xff0000);
+
+				await buttonInteraction.update({
+					embeds: [errorEmbed],
+					components: [],
+				});
+
+				collector.stop("error");
+			}
+		});
+
+		collector.on("end", (collected, reason) => {
+			if (reason === "time") {
+				log.debug("Instant alerts collector timed out", {
+					userId: interaction.user.id,
+					collected: collected.size,
+				});
+			}
+		});
 	},
 };

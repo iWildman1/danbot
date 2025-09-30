@@ -1,18 +1,18 @@
-import { CronJob } from "cron";
-import { Events, type TextChannel } from "discord.js";
 import { commands } from "@/commands";
 import { env } from "@/env";
 import { logger } from "@/framework/logger";
+import { registerCommand } from "@/framework/registry";
 import {
 	createDiscordClient,
 	initializeDiscordBot,
 	setupInteractionHandling,
 } from "@/services/discord";
-import { registerCommand } from "@/framework/registry";
 import {
 	scanAndSendDailyEvents,
 	scanAndSendInstantEvents,
 } from "@/services/scanner";
+import { CronJob } from "cron";
+import { Events, type TextChannel } from "discord.js";
 
 for (const command of commands) {
 	registerCommand(command);

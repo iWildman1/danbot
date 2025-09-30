@@ -60,7 +60,6 @@ export async function getEventsList(redisKey = "seen_events") {
 
 		const nextEventsData = eventListSchema.parse(nextData.data);
 
-
 		token = nextEventsData.pagination?.has_more_items
 			? nextEventsData.pagination?.continuation
 			: undefined;
