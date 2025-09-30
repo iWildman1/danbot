@@ -57,11 +57,11 @@ export const getInstantAlertsCommand: Command = {
 
 		const response = await interaction.fetchReply();
 
-		// Collect button interaction with 60 second timeout
+		// Collect button interaction with 5 second timeout
 		const collector = response.createMessageComponentCollector({
 			componentType: ComponentType.Button,
 			filter: (i) => i.user.id === interaction.user.id,
-			time: 60000,
+			time: 5000,
 		});
 
 		collector.on("collect", async (buttonInteraction) => {
@@ -118,13 +118,42 @@ export const getInstantAlertsCommand: Command = {
 			}
 		});
 
-		collector.on("end", (collected, reason) => {
+		collector.on("end", async (collected, reason) => {
 			if (reason === "time") {
 				logger.debug(
 					"Instant alerts collector timed out:",
 					interaction.user.id,
 					collected.size,
 				);
+
+				const disabledRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+					new ButtonBuilder()
+						.setCustomId("instant_notifications_disabled")
+						.setLabel("🔔 Get Notifications")
+						.setStyle(ButtonStyle.Primary)
+						.setDisabled(true),
+					new ButtonBuilder()
+						.setCustomId("instant_access_only_disabled")
+						.setLabel("👁️ Access Only")
+						.setStyle(ButtonStyle.Secondary)
+						.setDisabled(true),
+				);
+
+				const timeoutEmbed = new EmbedBuilder()
+					.setTitle("⏱️ Request Expired")
+					.setDescription(
+						"This request has timed out. Please run `/get-instant-alerts` again to set your preferences.",
+					)
+					.setColor(0xff9900);
+
+				try {
+					await interaction.editReply({
+						embeds: [timeoutEmbed],
+						components: [disabledRow],
+					});
+				} catch (error) {
+					logger.error("Error updating expired interaction:", error);
+				}
 			}
 		});
 	},
