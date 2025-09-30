@@ -57,11 +57,11 @@ export const getInstantAlertsCommand: Command = {
 
 		const response = await interaction.fetchReply();
 
-		// Collect button interaction with 5 second timeout
+		// Collect button interaction with 60 second timeout
 		const collector = response.createMessageComponentCollector({
 			componentType: ComponentType.Button,
 			filter: (i) => i.user.id === interaction.user.id,
-			time: 5000,
+			time: 60000,
 		});
 
 		collector.on("collect", async (buttonInteraction) => {
