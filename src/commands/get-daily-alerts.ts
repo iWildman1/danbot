@@ -55,16 +55,16 @@ export const getDailyAlertsCommand: Command = {
 			flags: MessageFlags.Ephemeral,
 		});
 
-		const response = await interaction.fetchReply();
+		try {
+			const response = await interaction.fetchReply();
 
-		// Collect button interaction with 60 second timeout
-		const collector = response.createMessageComponentCollector({
-			componentType: ComponentType.Button,
-			filter: (i) => i.user.id === interaction.user.id,
-			time: 60000,
-		});
+			// Wait for button interaction with 60 second timeout
+			const buttonInteraction = await response.awaitMessageComponent({
+				componentType: ComponentType.Button,
+				filter: (i) => i.user.id === interaction.user.id,
+				time: 5000,
+			});
 
-		collector.on("collect", async (buttonInteraction) => {
 			const preference =
 				buttonInteraction.customId === "daily_notifications"
 					? "notifications"
@@ -89,8 +89,6 @@ export const getDailyAlertsCommand: Command = {
 				});
 
 				logger.info("Assigned daily role:", member.user.id, preference);
-
-				collector.stop("completed");
 			} catch (error) {
 				logger.error(
 					"Error assigning daily role:",
@@ -113,48 +111,25 @@ export const getDailyAlertsCommand: Command = {
 					embeds: [errorEmbed],
 					components: [],
 				});
-
-				collector.stop("error");
 			}
-		});
+		} catch (error) {
+			logger.debug("Daily alerts interaction timed out:", interaction.user.id);
 
-		collector.on("end", async (collected, reason) => {
-			if (reason === "time") {
-				logger.debug(
-					"Daily alerts collector timed out:",
-					interaction.user.id,
-					collected.size,
-				);
+			const timeoutEmbed = new EmbedBuilder()
+				.setTitle("⏱️ Request Expired")
+				.setDescription(
+					"This request has timed out. Please run `/get-daily-alerts` again to set your preferences.",
+				)
+				.setColor(0xff9900);
 
-				const disabledRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-					new ButtonBuilder()
-						.setCustomId("daily_notifications_disabled")
-						.setLabel("🔔 Get Notifications")
-						.setStyle(ButtonStyle.Primary)
-						.setDisabled(true),
-					new ButtonBuilder()
-						.setCustomId("daily_access_only_disabled")
-						.setLabel("👁️ Access Only")
-						.setStyle(ButtonStyle.Secondary)
-						.setDisabled(true),
-				);
-
-				const timeoutEmbed = new EmbedBuilder()
-					.setTitle("⏱️ Request Expired")
-					.setDescription(
-						"This request has timed out. Please run `/get-daily-alerts` again to set your preferences.",
-					)
-					.setColor(0xff9900);
-
-				try {
-					await interaction.editReply({
-						embeds: [timeoutEmbed],
-						components: [disabledRow],
-					});
-				} catch (error) {
-					logger.error("Error updating expired interaction:", error);
-				}
+			try {
+				await interaction.editReply({
+					embeds: [timeoutEmbed],
+					components: [],
+				});
+			} catch (updateError) {
+				logger.error("Error updating expired interaction:", updateError);
 			}
-		});
+		}
 	},
 };
