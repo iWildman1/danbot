@@ -1,6 +1,10 @@
 import { logger } from "@/framework/logger";
 import { getCommand } from "@/framework/registry";
-import type { ChatInputCommandInteraction, Interaction } from "discord.js";
+import {
+	type ChatInputCommandInteraction,
+	type Interaction,
+	MessageFlags,
+} from "discord.js";
 
 async function handleSlashCommand(interaction: ChatInputCommandInteraction) {
 	const command = getCommand(interaction.commandName);
@@ -29,7 +33,7 @@ export async function routeInteraction(interaction: Interaction) {
 		) {
 			await interaction.reply({
 				content: "❌ An error occurred while processing your request.",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 	}

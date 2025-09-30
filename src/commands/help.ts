@@ -1,5 +1,5 @@
 import type { Command } from "@/types/commands";
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 export const helpCommand: Command = {
 	data: new SlashCommandBuilder()
@@ -42,7 +42,7 @@ export const helpCommand: Command = {
 
 		await interaction.reply({
 			embeds: [embed],
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 		});
 	},
 };

@@ -8,6 +8,7 @@ import {
 	ComponentType,
 	EmbedBuilder,
 	type GuildMember,
+	MessageFlags,
 	SlashCommandBuilder,
 } from "discord.js";
 
@@ -51,7 +52,7 @@ export const getDailyAlertsCommand: Command = {
 		await interaction.reply({
 			embeds: [embed],
 			components: [row],
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 		});
 
 		const response = await interaction.fetchReply();
