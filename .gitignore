@@ -3,3 +3,5 @@ dist
 .env
 .pnpm-store/
 .pnpm-debug.log
+AGENTS.md
+CLAUDE.md
