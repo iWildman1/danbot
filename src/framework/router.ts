@@ -1,5 +1,5 @@
+import { getCommand } from "@/commands";
 import { logger } from "@/framework/logger";
-import { getCommand } from "@/framework/registry";
 import {
 	type ChatInputCommandInteraction,
 	type Interaction,

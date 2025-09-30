@@ -1,7 +1,5 @@
-import { commands } from "@/commands";
 import { env } from "@/env";
 import { logger } from "@/framework/logger";
-import { registerCommand } from "@/framework/registry";
 import {
 	createDiscordClient,
 	initializeDiscordBot,
@@ -13,10 +11,6 @@ import {
 } from "@/services/scanner";
 import { CronJob } from "cron";
 import { Events, type TextChannel } from "discord.js";
-
-for (const command of commands) {
-	registerCommand(command);
-}
 
 const client = createDiscordClient();
 
